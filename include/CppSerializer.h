@@ -4,6 +4,8 @@
 #include <fstream>
 #include <filesystem>
 #include <vector>
+#include <iostream>
+#include <string>
 
 #define MAP_SEPARATOR_BEGIN " ------------- "
 #define MAP_SEPARATOR_END " ============= "
@@ -35,31 +37,45 @@ namespace CppSer {
 		template<typename T> Serializer& operator<<(T* value);
 		Serializer& operator<<(const char* value);
 
-		/* Extra serialization functionality can be added here using the EXTRA_CPPSERIALIZER macro, e.g:
+		/* 
+		// Extra serialization functionality can be added here using the EXTRA_CPPSERIALIZER_SERIALIZER
+		// and EXTRA_CPPSERIALIZER_PARSER macro, e.g:
+
 		struct Vec2f
 		{
 			float x;
 			float y;
-		
+
 			std::string ToString() const
 			{
 				return std::to_string(x) + " " + std::to_string(y);
 			}
 		};
-		
-		#define EXTRA_CPPSERIALIZER \
+
+		#define EXTRA_CPPSERIALIZER_SERIALIZER \
 		Serializer& operator<<(const Vec2f& value)\
 		{\
 			const std::string stringValue = value.ToString();\
 			*this << stringValue.c_str();\
 			return *this;\
 		}\
+
+		#define EXTRA_CPPSERIALIZER_PARSER \
+		Vec2f As() const\
+		{\
+			std::istringstream ss(m_content);\
+			Vec2f vec2f;\
+			ss >> vec2f.x >> vec2f.y; \
+			return vec2f;\
+		}
 		*/
-#ifdef EXTRA_CPPSERIALIZER_SERIALIZE
-		EXTRA_CPPSERIALIZER_SERIALIZE
+
+#ifdef EXTRA_CPPSERIALIZER_SERIALIZER
+		EXTRA_CPPSERIALIZER_SERIALIZER;
 #endif
 
-			inline std::string GetContent() const { return m_content.str(); }
+		inline std::string GetContent() const { return m_content.str(); }
+		inline void SetTabSize(uint32_t size) { m_tabSize = size; }
 		inline void SetShouldSaveOnDestroy(bool val) { m_saveOnDestroy = val; }
 	private:
 		inline void WriteLine();
@@ -75,6 +91,7 @@ namespace CppSer {
 	private:
 		std::stringstream m_content;
 		std::filesystem::path m_filePath;
+		uint32_t m_tabSize = 2;
 
 		std::string m_tab;
 
@@ -126,8 +143,12 @@ namespace CppSer {
 			return m_content;
 		}
 
-		template <typename T>
-		T As();
+		template <typename T> T As() const;
+
+#ifdef EXTRA_CPPSERIALIZER_PARSER
+		EXTRA_CPPSERIALIZER_PARSER
+#endif
+
 	private:
 		std::string m_content;
 	};
@@ -141,7 +162,8 @@ namespace CppSer {
 		inline bool IsFileOpen() const { return m_fileOpen; }
 		inline void PrintData();
 
-		inline void NewDepth();
+		inline void PushDepth();
+		inline void PopDepth();
 
 		inline StringSerializer operator[](const std::string& key);
 		inline const std::vector<std::unordered_map<std::string, StringSerializer>>& GetValueMap() const { return m_valueMap; }

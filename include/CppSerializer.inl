@@ -185,12 +185,14 @@ inline void CppSer::Serializer::AddLine(const std::string& line)
 
 inline void CppSer::Serializer::PushTab()
 {
-	m_tab.push_back(' ');
+	for (int i = 0; i < m_tabSize; i++)
+		m_tab.push_back(' ');
 }
 
 inline void CppSer::Serializer::PopTab()
 {
-	m_tab.pop_back();
+	for (int i = 0; i < m_tabSize; i++)
+		m_tab.pop_back();
 }
 #pragma endregion
 
@@ -229,11 +231,18 @@ inline void CppSer::Parser::ParseContent(const std::string& content)
 	std::string line;
 	std::unordered_map<std::string, StringSerializer>* currentMap = nullptr;
 
+	size_t currMapIndex = -1;
 	while (std::getline(ss, line)) {
 		if (line.find(MAP_SEPARATOR_BEGIN) != std::string::npos)
 		{
+			currMapIndex++;
 			m_valueMap.emplace_back();
-			currentMap = &m_valueMap.back();
+			currentMap = &m_valueMap[currMapIndex];
+		}
+		else if (line.find(MAP_SEPARATOR_END) != std::string::npos)
+		{
+			currMapIndex--;
+			currentMap = &m_valueMap[currMapIndex];
 		}
 
 		if (const size_t pos = line.find("["); pos != std::string::npos)
@@ -249,21 +258,24 @@ inline void CppSer::Parser::ParseContent(const std::string& content)
 
 inline void CppSer::Parser::PrintData()
 {
-	/*
 	for (auto& maps : m_valueMap)
 	{
 		for (auto& [key, value] : maps)
 		{
-			std::cout << key << " : " << value << std::endl;
+			std::cout << key << " : " << (std::string)value << std::endl;
 		}
 		std::cout << "---------------------------" << std::endl;
 	}
-	*/
 }
 
-inline void CppSer::Parser::NewDepth()
+inline void CppSer::Parser::PushDepth()
 {
 	m_currentDepth++;
+}
+
+inline void CppSer::Parser::PopDepth()
+{
+	m_currentDepth--;
 }
 
 inline CppSer::StringSerializer CppSer::Parser::operator[](const std::string& key)
@@ -279,8 +291,7 @@ inline CppSer::StringSerializer CppSer::Parser::operator[](const std::string& ke
 #pragma endregion
 
 #pragma region StringSerializer
-template <typename T>
-inline T CppSer::StringSerializer::As()
+template <typename T> T CppSer::StringSerializer::As() const
 {
 	// return static_cast<T>(m_content);
 	std::cerr << "Error with parsing type as" << std::endl;
@@ -288,13 +299,13 @@ inline T CppSer::StringSerializer::As()
 }
 
 template <>
-inline std::string CppSer::StringSerializer::As()
+inline std::string CppSer::StringSerializer::As() const
 {
 	return m_content;
 }
 
 template <>
-inline float CppSer::StringSerializer::As()
+inline float CppSer::StringSerializer::As() const
 {
 	try
 	{
@@ -307,7 +318,7 @@ inline float CppSer::StringSerializer::As()
 }
 
 template <>
-inline double CppSer::StringSerializer::As()
+inline double CppSer::StringSerializer::As() const
 {
 	try
 	{
@@ -320,7 +331,7 @@ inline double CppSer::StringSerializer::As()
 }
 
 template <>
-inline unsigned long long CppSer::StringSerializer::As()
+inline unsigned long long CppSer::StringSerializer::As() const
 {
 	try
 	{
@@ -333,7 +344,7 @@ inline unsigned long long CppSer::StringSerializer::As()
 }
 
 template <>
-inline long long CppSer::StringSerializer::As()
+inline long long CppSer::StringSerializer::As() const
 {
 	try
 	{
@@ -346,7 +357,7 @@ inline long long CppSer::StringSerializer::As()
 }
 
 template <>
-inline unsigned long CppSer::StringSerializer::As()
+inline unsigned long CppSer::StringSerializer::As() const
 {
 	try
 	{
@@ -359,7 +370,7 @@ inline unsigned long CppSer::StringSerializer::As()
 }
 
 template <>
-inline int CppSer::StringSerializer::As()
+inline int CppSer::StringSerializer::As() const
 {
 	try
 	{
@@ -372,7 +383,7 @@ inline int CppSer::StringSerializer::As()
 }
 
 template <>
-inline bool CppSer::StringSerializer::As()
+inline bool CppSer::StringSerializer::As() const
 {
 	try
 	{
