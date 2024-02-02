@@ -163,7 +163,6 @@ namespace CppSer {
 		inline void PrintData();
 
 		inline void PushDepth();
-		inline void PopDepth();
 
 		inline StringSerializer operator[](const std::string& key);
 		inline const std::vector<std::unordered_map<std::string, StringSerializer>>& GetValueMap() const { return m_valueMap; }

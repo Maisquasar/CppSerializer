@@ -239,11 +239,6 @@ inline void CppSer::Parser::ParseContent(const std::string& content)
 			m_valueMap.emplace_back();
 			currentMap = &m_valueMap[currMapIndex];
 		}
-		else if (line.find(MAP_SEPARATOR_END) != std::string::npos)
-		{
-			currMapIndex--;
-			currentMap = &m_valueMap[currMapIndex];
-		}
 
 		if (const size_t pos = line.find("["); pos != std::string::npos)
 		{
@@ -271,11 +266,6 @@ inline void CppSer::Parser::PrintData()
 inline void CppSer::Parser::PushDepth()
 {
 	m_currentDepth++;
-}
-
-inline void CppSer::Parser::PopDepth()
-{
-	m_currentDepth--;
 }
 
 inline CppSer::StringSerializer CppSer::Parser::operator[](const std::string& key)

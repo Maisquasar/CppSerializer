@@ -74,8 +74,8 @@ int main(int argc, char** argv)
 			// New Depth for map
 			parser.PushDepth();
 			float value2 = parser["Value"].As<float>();
-			parser.PopDepth();
 		}
+		// this will not work because of the Push depth
 		int tabValue = parser["Tab key"].As<int>();
 	}
 
