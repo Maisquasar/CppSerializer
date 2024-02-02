@@ -12,6 +12,7 @@ struct Vec2f
 	}
 };
 
+// Add Extra type to serialize
 #define EXTRA_CPPSERIALIZER_SERIALIZER \
 Serializer& operator<<(const Vec2f& value)\
 {\
