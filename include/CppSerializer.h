@@ -34,7 +34,7 @@ namespace CppSer {
 
 		// Overloaded operators to serialize various data types.
 		template<typename T> Serializer& operator<<(const T& value);
-
+		template<typename T> Serializer& operator<<(T* value);
 
 		inline Serializer& operator<<(const bool& value);
 		inline Serializer& operator<<(const char& value);
