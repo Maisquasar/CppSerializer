@@ -1,38 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include "CppSerializer.h"
-struct Vec2f
-{
-	Vec2f(float x = 0, float y = 0) : x(x), y(y) {}
-
-	float x;
-	float y;
-
-	std::string ToString() const
-	{
-		return std::to_string(x) + " " + std::to_string(y);
-	}
-};
-
-template<>
-Vec2f CppSer::StringSerializer::As<Vec2f>() const
-{
-	std::istringstream ss(m_content);
-	Vec2f vec2;
-	ss >> vec2.x >> vec2.y;
-	return vec2;
-}
-
-template<>
-CppSer::Serializer& CppSer::Serializer::operator<<(const Vec2f& value)
-{
-	const std::string stringValue = value.ToString();
-	*this << stringValue.c_str();
-	return *this;
-}
-
-#include "CppSerializer.inl"
+#include "SerializerTemplate.h"
 
 using namespace std;
 
@@ -60,8 +29,8 @@ int main(int argc, char** argv)
 		}
 	}
 	serializer << Pair::EndMap << "Map 0";
-	// Or will automatically close on destructor of Serializer
 	serializer.CloseFile();
+	// Or will automatically close on destructor of Serializer
 
 	vec2f = {};
 

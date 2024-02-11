@@ -34,10 +34,25 @@ namespace CppSer {
 
 		// Overloaded operators to serialize various data types.
 		template<typename T> Serializer& operator<<(const T& value);
-		template<typename T> Serializer& operator<<(T* value);
-		Serializer& operator<<(const char* value);
 
-		/* 
+
+		inline Serializer& operator<<(const bool& value);
+		inline Serializer& operator<<(const char& value);
+		inline Serializer& operator<<(const int& value);
+		inline Serializer& operator<<(const unsigned int& value);
+		inline Serializer& operator<<(const long long& value);
+		inline Serializer& operator<<(const unsigned long long& value);
+		inline Serializer& operator<<(const float& value);
+		inline Serializer& operator<<(const double& value);
+		inline Serializer& operator<<(const std::string& value);
+		inline Serializer& operator<<(const std::filesystem::path& value);
+
+		inline Serializer& operator<<(const Pair& value);
+		inline Serializer& operator<<(const char* value);
+
+		//template<typename T> Serializer& operator<<(T* value);
+
+		/*
 		// Extra serialization functionality can be added here using the template method operator<<() and As(), e.g:
 
 		struct Vec2f
@@ -145,6 +160,96 @@ namespace CppSer {
 	private:
 		std::string m_content;
 	};
+
+	template<> inline int StringSerializer::As() const
+	{
+		try
+		{
+			return std::stoi(m_content);
+		}
+		catch (...)
+		{
+			return 0;
+		}
+	}
+
+	template<> inline std::string StringSerializer::As() const
+	{
+		return m_content;
+	}
+
+	template<> inline float StringSerializer::As() const
+	{
+		try
+		{
+			return std::stof(m_content);
+		}
+		catch (...)
+		{
+			return 0.f;
+		}
+	}
+
+	template<> inline double StringSerializer::As() const
+	{
+		try
+		{
+			return std::stod(m_content);
+		}
+		catch (...)
+		{
+			return 0.0;
+		}
+	}
+
+	template<> inline unsigned long long StringSerializer::As() const
+	{
+		try
+		{
+			return std::stoull(m_content);
+		}
+		catch (...)
+		{
+			return -1;
+		}
+	}
+
+	template<> inline long long StringSerializer::As() const
+	{
+		try
+		{
+			return std::stoll(m_content);
+		}
+		catch (...)
+		{
+			return 0;
+		}
+	}
+
+	template<> inline unsigned long StringSerializer::As() const
+	{
+		try
+		{
+			return std::stoul(m_content);
+		}
+		catch (...)
+		{
+			return -1;
+		}
+	}
+
+	template<> inline bool StringSerializer::As() const
+	{
+		try
+		{
+			return std::stoi(m_content);
+		}
+		catch (...)
+		{
+			return 0;
+		}
+	}
+
 
 	class Parser
 	{

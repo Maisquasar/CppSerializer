@@ -24,86 +24,75 @@ inline void CppSer::Serializer::CloseFile() const
 	file.close();
 }
 
-template<typename T> inline CppSer::Serializer& CppSer::Serializer::operator<<(const T& value)
-{
-	std::cerr << "Error while serialize type : " << typeid(T).name() << std::endl;
-	return *this;
-}
-
-template<typename T> inline CppSer::Serializer& CppSer::Serializer::operator<<(T* value)
-{
-	std::cout << "Error while serialize type : " << typeid(*value).name() << std::endl;
-	return *this;
-}
-
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const std::string& value)
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const std::string& value)
 {
 	*this << value.c_str();
 	return *this;
 }
 
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const char& value)
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const char& value)
 {
 	const std::string stringValue(1, value);
 	*this << stringValue.c_str();
 	return *this;
 }
 
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const std::filesystem::path& value)
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const std::filesystem::path& value)
 {
 	*this << value.generic_string().c_str();
 	return *this;
 }
 
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const bool& value)
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const bool& value)
 {
 	const std::string stringValue = std::to_string(value);
 	*this << stringValue.c_str();
 	return *this;
 }
 
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const float& value)
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const float& value)
 {
 	const std::string stringValue = std::to_string(value);
 	*this << stringValue.c_str();
 	return *this;
 }
 
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const int& value)
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const int& value)
 {
 	const std::string stringValue = std::to_string(value);
 	*this << stringValue.c_str();
 	return *this;
 }
 
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const unsigned long& value)
-{
-	const std::string stringValue = std::to_string(value);
-	*this << stringValue.c_str();
-	return *this;
-}
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const long long& value)
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const unsigned int& value)
 {
 	const std::string stringValue = std::to_string(value);
 	*this << stringValue.c_str();
 	return *this;
 }
 
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const unsigned long long& value)
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const long long& value)
 {
 	const std::string stringValue = std::to_string(value);
 	*this << stringValue.c_str();
 	return *this;
 }
 
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const double& value)
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const unsigned long long& value)
 {
 	const std::string stringValue = std::to_string(value);
 	*this << stringValue.c_str();
 	return *this;
 }
 
-template<> inline CppSer::Serializer& CppSer::Serializer::operator<<(const Pair& value)
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const double& value)
+{
+	const std::string stringValue = std::to_string(value);
+	*this << stringValue.c_str();
+	return *this;
+}
+
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const Pair& value)
 {
 	SetCurrentType(value);
 	return *this;
@@ -280,109 +269,4 @@ inline CppSer::StringSerializer CppSer::Parser::operator[](const std::string& ke
 	return m_valueMap[m_currentDepth][key];
 }
 
-#pragma endregion
-
-#pragma region StringSerializer
-template <typename T> T CppSer::StringSerializer::As() const
-{
-	std::cerr << "Error with parsing type as with type " << typeid(T).name() << std::endl;
-	return T();
-}
-
-template <>
-inline std::string CppSer::StringSerializer::As() const
-{
-	return m_content;
-}
-
-template <>
-inline float CppSer::StringSerializer::As() const
-{
-	try
-	{
-		return std::stof(m_content);
-	}
-	catch (...)
-	{
-		return 0.f;
-	}
-}
-
-template <>
-inline double CppSer::StringSerializer::As() const
-{
-	try
-	{
-		return std::stod(m_content);
-	}
-	catch (...)
-	{
-		return 0.0;
-	}
-}
-
-template <>
-inline unsigned long long CppSer::StringSerializer::As() const
-{
-	try
-	{
-		return std::stoull(m_content);
-	}
-	catch (...)
-	{
-		return -1;
-	}
-}
-
-template <>
-inline long long CppSer::StringSerializer::As() const
-{
-	try
-	{
-		return std::stoll(m_content);
-	}
-	catch (...)
-	{
-		return 0;
-	}
-}
-
-template <>
-inline unsigned long CppSer::StringSerializer::As() const
-{
-	try
-	{
-		return std::stoul(m_content);
-	}
-	catch (...)
-	{
-		return -1;
-	}
-}
-
-template <>
-inline int CppSer::StringSerializer::As() const
-{
-	try
-	{
-		return std::stoi(m_content);
-	}
-	catch (...)
-	{
-		return 0;
-	}
-}
-
-template <>
-inline bool CppSer::StringSerializer::As() const
-{
-	try
-	{
-		return std::stoi(m_content);
-	}
-	catch (...)
-	{
-		return 0;
-	}
-}
 #pragma endregion
