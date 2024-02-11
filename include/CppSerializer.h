@@ -38,8 +38,7 @@ namespace CppSer {
 		Serializer& operator<<(const char* value);
 
 		/* 
-		// Extra serialization functionality can be added here using the EXTRA_CPPSERIALIZER_SERIALIZER
-		// and EXTRA_CPPSERIALIZER_PARSER macro, e.g:
+		// Extra serialization functionality can be added here using the template method operator<<() and As(), e.g:
 
 		struct Vec2f
 		{
@@ -52,27 +51,25 @@ namespace CppSer {
 			}
 		};
 
-		#define EXTRA_CPPSERIALIZER_SERIALIZER \
-		Serializer& operator<<(const Vec2f& value)\
-		{\
-			const std::string stringValue = value.ToString();\
-			*this << stringValue.c_str();\
-			return *this;\
-		}\
+		// Serialization
+		template<>
+		CppSer::Serializer& CppSer::Serializer::operator<<(const Vec2f& value)
+		{
+			const std::string stringValue = value.ToString();
+			*this << stringValue.c_str();
+			return *this;
+		}
 
-		#define EXTRA_CPPSERIALIZER_PARSER \
-		Vec2f As() const\
-		{\
-			std::istringstream ss(m_content);\
-			Vec2f vec2f;\
-			ss >> vec2f.x >> vec2f.y; \
-			return vec2f;\
+		// Parsing
+		template<>
+		Vec2f CppSer::StringSerializer::As<Vec2f>() const
+		{
+			std::istringstream ss(m_content);
+			Vec2f vec2;
+			ss >> vec2.x >> vec2.y;
+			return vec2;
 		}
 		*/
-
-#ifdef EXTRA_CPPSERIALIZER_SERIALIZER
-		EXTRA_CPPSERIALIZER_SERIALIZER;
-#endif
 
 		inline std::string GetContent() const { return m_content.str(); }
 		inline void SetTabSize(uint32_t size) { m_tabSize = size; }
@@ -144,10 +141,6 @@ namespace CppSer {
 		}
 
 		template <typename T> T As() const;
-
-#ifdef EXTRA_CPPSERIALIZER_PARSER
-		EXTRA_CPPSERIALIZER_PARSER
-#endif
 
 	private:
 		std::string m_content;

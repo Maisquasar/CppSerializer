@@ -26,11 +26,13 @@ inline void CppSer::Serializer::CloseFile() const
 
 template<typename T> inline CppSer::Serializer& CppSer::Serializer::operator<<(const T& value)
 {
+	std::cerr << "Error while serialize type : " << typeid(T).name() << std::endl;
 	return *this;
 }
 
 template<typename T> inline CppSer::Serializer& CppSer::Serializer::operator<<(T* value)
 {
+	std::cout << "Error while serialize type : " << typeid(*value).name() << std::endl;
 	return *this;
 }
 
@@ -283,8 +285,7 @@ inline CppSer::StringSerializer CppSer::Parser::operator[](const std::string& ke
 #pragma region StringSerializer
 template <typename T> T CppSer::StringSerializer::As() const
 {
-	// return static_cast<T>(m_content);
-	std::cerr << "Error with parsing type as" << std::endl;
+	std::cerr << "Error with parsing type as with type " << typeid(T).name() << std::endl;
 	return T();
 }
 

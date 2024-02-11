@@ -1,8 +1,11 @@
 #include <iostream>
 #include <string>
 
+#include "CppSerializer.h"
 struct Vec2f
 {
+	Vec2f(float x = 0, float y = 0) : x(x), y(y) {}
+
 	float x;
 	float y;
 
@@ -12,26 +15,24 @@ struct Vec2f
 	}
 };
 
-// Add Extra type to serialize
-#define EXTRA_CPPSERIALIZER_SERIALIZER \
-Serializer& operator<<(const Vec2f& value)\
-{\
-	const std::string stringValue = value.ToString();\
-	*this << stringValue.c_str();\
-	return *this;\
-}\
-
-#define EXTRA_CPPSERIALIZER_PARSER \
-template<>\
-Vec2f As() const\
-{\
-	std::istringstream ss(m_content);\
-	Vec2f vec2f;\
-	ss >> vec2f.x >> vec2f.y; \
-	return vec2f;\
+template<>
+Vec2f CppSer::StringSerializer::As<Vec2f>() const
+{
+	std::istringstream ss(m_content);
+	Vec2f vec2;
+	ss >> vec2.x >> vec2.y;
+	return vec2;
 }
 
-#include "CppSerializer.h"
+template<>
+CppSer::Serializer& CppSer::Serializer::operator<<(const Vec2f& value)
+{
+	const std::string stringValue = value.ToString();
+	*this << stringValue.c_str();
+	return *this;
+}
+
+#include "CppSerializer.inl"
 
 using namespace std;
 
