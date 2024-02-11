@@ -15,22 +15,34 @@ CppSerializer is a simple C++ library that provides serialization and parsing ca
 To add support for a custom type (e.g., `Vec2f`), use the provided macros to extend the functionality of the serializer and parser.
 
 ```cpp
-#define EXTRA_CPPSERIALIZER_SERIALIZER \
-Serializer& operator<<(const Vec2f& value)\
-{\
-    const std::string stringValue = value.ToString();\
-    *this << stringValue.c_str();\
-    return *this;\
-}\
+struct Vec2f
+{
+	Vec2f(float x = 0, float y = 0) : x(x), y(y) {}
 
-#define EXTRA_CPPSERIALIZER_PARSER \
-template<>\
-Vec2f As() const\
-{\
-    std::istringstream ss(m_content);\
-    Vec2f vec2f;\
-    ss >> vec2f.x >> vec2f.y; \
-    return vec2f;\
+	float x;
+	float y;
+
+	std::string ToString() const
+	{
+		return std::to_string(x) + " " + std::to_string(y);
+	}
+};
+
+template<>
+Vec2f CppSer::StringSerializer::As<Vec2f>() const
+{
+	std::istringstream ss(m_content);
+	Vec2f vec2;
+	ss >> vec2.x >> vec2.y;
+	return vec2;
+}
+
+template<>
+CppSer::Serializer& CppSer::Serializer::operator<<(const Vec2f& value)
+{
+	const std::string stringValue = value.ToString();
+	*this << stringValue.c_str();
+	return *this;
 }
 ```
 
