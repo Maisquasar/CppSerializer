@@ -17,7 +17,7 @@ inline void CppSer::Serializer::CloseFile() const
 {
 	std::ofstream file = std::ofstream(m_filePath);
 	if (!file.is_open()) {
-		std::cerr << ("File %s could'nt be create", m_filePath.string().c_str()) << std::endl;
+		std::cerr << "File " << m_filePath.string() << " could'nt be create" << std::endl;
 		file.close();
 	}
 	file << m_content.str();
@@ -176,13 +176,13 @@ inline void CppSer::Serializer::AddLine(const std::string& line)
 
 inline void CppSer::Serializer::PushTab()
 {
-	for (int i = 0; i < m_tabSize; i++)
+	for (uint32_t i = 0; i < m_tabSize; i++)
 		m_tab.push_back(' ');
 }
 
 inline void CppSer::Serializer::PopTab()
 {
-	for (int i = 0; i < m_tabSize; i++)
+	for (uint32_t i = 0; i < m_tabSize; i++)
 		m_tab.pop_back();
 }
 #pragma endregion

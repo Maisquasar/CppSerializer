@@ -4,6 +4,8 @@ add_rules("plugin.vsxmake.autoupdate")
 set_rundir("$(projectdir)")
 set_languages("c++20")
 
+add_cxflags("-Wall")            -- Enable all commonly used warning flags
+
 target("CppSerializer")
     set_kind("binary")
 
