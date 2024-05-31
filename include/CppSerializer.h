@@ -29,6 +29,8 @@ namespace CppSer {
 		explicit Serializer(const std::filesystem::path& path);
 		~Serializer();
 
+		inline void SetVersion(const std::string& version);
+		
 		// Closes the file associated with the serializer (do not clear the content)
 		inline void CloseFile() const;
 
@@ -108,6 +110,7 @@ namespace CppSer {
 		std::string m_tab;
 
 		bool m_saveOnDestroy = true;
+		bool m_hasVersion = false;
 
 		std::pair<std::string, std::string> m_currentPair;
 
@@ -265,6 +268,7 @@ namespace CppSer {
 		inline StringSerializer operator[](const std::string& key);
 		inline const std::vector<std::unordered_map<std::string, StringSerializer>>& GetValueMap() const { return m_valueMap; }
 		inline size_t GetCurrentDepth() const { return m_currentDepth; }
+		inline std::string GetVersion() const { return version; }
 	private:
 		inline void ParseFile(const std::filesystem::path& path);
 		inline void ParseContent(const std::string& content);
@@ -273,6 +277,8 @@ namespace CppSer {
 		std::vector<std::unordered_map<std::string, StringSerializer>> m_valueMap;
 
 		size_t m_currentDepth = 0;
+
+		std::string version;
 
 		bool m_fileOpen = false;
 	};

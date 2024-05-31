@@ -12,6 +12,7 @@ int main(int argc, char** argv)
 	using namespace CppSer;
 
 	Serializer serializer("example.txt");
+	serializer.SetVersion("1.0.1");
 	serializer.SetTabSize(10);
 
 	Vec2f vec2f{ 2, 3 };
@@ -55,6 +56,7 @@ int main(int argc, char** argv)
 	}
 
 	std::cout << "Parser Content :" << std::endl;
+	std::cout << parser.GetVersion() << std::endl;
 	parser.PrintData();
 
 	return 0;

@@ -13,6 +13,24 @@ inline CppSer::Serializer::~Serializer()
 		CloseFile();
 }
 
+inline void CppSer::Serializer::SetVersion(const std::string& version)
+{
+	if (m_hasVersion)
+		return;
+	m_hasVersion = true;
+	if (m_content.str().empty())
+	{
+		m_content << "v" << version << '\n';
+	}
+	else
+	{
+		std::string content = m_content.str();
+		m_content.str(std::string());
+		m_content << "v" << version << '\n';
+		m_content << content;
+	}
+}
+
 inline void CppSer::Serializer::CloseFile() const
 {
 	std::ofstream file = std::ofstream(m_filePath);
@@ -222,8 +240,18 @@ inline void CppSer::Parser::ParseContent(const std::string& content)
 	std::string line;
 	std::unordered_map<std::string, StringSerializer>* currentMap = nullptr;
 
+	bool firstLine = true;
 	size_t currMapIndex = -1;
 	while (std::getline(ss, line)) {
+		if (firstLine)
+		{
+			const size_t pos = line.find_first_of('v');
+			if (pos != std::string::npos)
+			{
+				version = line.substr(pos + 1);
+			}
+			firstLine = false;
+		}
 		if (line.find(MAP_SEPARATOR_BEGIN) != std::string::npos)
 		{
 			currMapIndex++;
