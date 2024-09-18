@@ -91,6 +91,7 @@ namespace CppSer {
 		inline std::string GetContent() const { return m_content.str(); }
 		inline void SetTabSize(uint32_t size) { m_tabSize = size; }
 		inline void SetShouldSaveOnDestroy(bool val) { m_saveOnDestroy = val; }
+		inline void SetShouldCreateFileOnDestroy(bool val) { m_createFileOnDestroy = val; }
 	private:
 		inline void WriteLine();
 		inline void AddLine(const std::string& key, const std::string& value);
@@ -110,6 +111,7 @@ namespace CppSer {
 		std::string m_tab;
 
 		bool m_saveOnDestroy = true;
+		bool m_createFileOnDestroy = true;
 		bool m_hasVersion = false;
 
 		std::pair<std::string, std::string> m_currentPair;

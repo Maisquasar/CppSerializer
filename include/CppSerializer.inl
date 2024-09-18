@@ -34,9 +34,21 @@ inline void CppSer::Serializer::SetVersion(const std::string& version)
 inline void CppSer::Serializer::CloseFile() const
 {
 	std::ofstream file = std::ofstream(m_filePath);
-	if (!file.is_open()) {
-		std::cerr << "File " << m_filePath.string() << " could'nt be create" << std::endl;
-		file.close();
+	if (!file.is_open())
+	{
+		if (m_createFileOnDestroy)
+		{
+			const std::filesystem::path parent = m_filePath.parent_path();
+			if (!std::filesystem::exists(parent))
+			{
+				std::filesystem::create_directories(parent);
+				file = std::ofstream(m_filePath);
+			}
+		}
+		if (!file.is_open())
+		{
+			std::cerr << "File " << m_filePath.string() << " couldn't be created!" << std::endl;
+		}
 	}
 	file << m_content.str();
 	file.close();
