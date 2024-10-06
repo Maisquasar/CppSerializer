@@ -53,6 +53,7 @@ int main(int argc, char** argv)
 		// this will not work because of the Push depth
 		int tabValue = parser["Tab key"].As<int>();
 		UNUSED(tabValue);
+		std::cout << "Key exists : " << parser.HasKey("Key name") << std::endl;
 	}
 
 	std::cout << "Parser Content :" << std::endl;

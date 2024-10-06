@@ -265,8 +265,21 @@ namespace CppSer {
 		inline bool IsFileOpen() const { return m_fileOpen; }
 		inline void PrintData();
 
+		/**
+		 * @brief Pushes a new depth into the vector of maps
+		 */
 		inline void PushDepth();
 
+		
+		/**
+		 * @brief Checks if the key exists in the current depth
+		 * @param key the key to search for
+		 * @return true if the key exists in the current depth
+		 */
+		inline bool HasKey(const std::string& key) const
+		{
+			return m_valueMap[m_currentDepth].find(key) != m_valueMap[m_currentDepth].end();
+		}
 		inline StringSerializer operator[](const std::string& key);
 		inline const std::vector<std::unordered_map<std::string, StringSerializer>>& GetValueMap() const { return m_valueMap; }
 		inline size_t GetCurrentDepth() const { return m_currentDepth; }

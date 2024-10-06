@@ -47,83 +47,20 @@ CppSer::Serializer& CppSer::Serializer::operator<<(const Vec2f& value)
 ```
 
 ### Using CppSerializer in Your Code
-You can see this example in the example folder
+You can see an example in the [example folder](https://github.com/Maisquasar/CppSerializer/tree/master/example).
 
-```cpp
-#include "CppSerializer.h"
+### Running the Example
+To run the example, simply compile the code with [xmake](https://github.com/xmake-io/xmake) and run it.
 
-using namespace std;
-
-int main(int argc, char** argv)
-{
-    using namespace CppSer;
-
-    // Create a serializer with a specified file name
-    Serializer serializer("example.txt");
-    serializer.SetTabSize(10);
-
-    Vec2f vec2f{ 2, 3 };
-
-    // Serialize data using a fluent interface
-    serializer << Pair::BeginMap << "Map 0";
-    {
-        serializer << Pair::Key << "Key" << Pair::Value << "Value";
-        serializer << Pair::Key << "Vec2f" << Pair::Value << vec2f;
-        serializer << Pair::BeginMap << "Map 1";
-        {
-            serializer << Pair::Key << "Key Map 1" << Pair::Value << 2.f;
-        }
-        serializer << Pair::EndMap << "Map 1";
-        {
-            serializer << Pair::BeginTab;
-            serializer << Pair::Key << "Tab key" << Pair::Value << 10;
-            serializer << Pair::EndTab;
-        }
-    }
-    serializer << Pair::EndMap << "Map 0";
-
-    // Close the file explicitly or let the destructor do it
-
-    // Get the serialized content
-    std::cout << "Serializer Content :" << std::endl;
-    std::cout << serializer.GetContent() << std::endl;
-
-    // Create a parser with the serialized content
-    Parser parser(serializer.GetContent());
-    {
-        // Parse data using a fluent interface
-        vec2f = parser["Vec2f"].As<Vec2f>();
-        std::string value = parser["Value"];
-        {
-            // New Depth for map
-            parser.PushDepth();
-            float value2 = parser["Value"].As<float>();
-        }
-        // This will not work because of the Push depth
-        int tabValue = parser["Tab key"].As<int>();
-    }
-
-    // Print the parsed data
-    std::cout << "Parser Content :" << std::endl;
-    parser.PrintData();
-
-    return 0;
-}
+Compile :
+```bash
+$ xmake f -p [windows|linux|macosx|android|iphoneos ..] -a [x86|arm64 ..] -m [debug|release]
+$ xmake
 ```
 
-
-### Output
-example.txt
-```
- ------------- Map 0 ------------- 
-[Key] : Value
-[Vec2f] : 2.000000 3.000000
- ------------- Map 1 ------------- 
-[Key Map 1] : 2.000000
- ============= Map 1 ============= 
-          [Tab key] : 10
- ============= Map 0 ============= 
-
+Run :
+```bash
+$ xmake run
 ```
 
 ## License
