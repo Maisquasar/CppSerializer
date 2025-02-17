@@ -101,6 +101,13 @@ inline CppSer::Serializer& CppSer::Serializer::operator<<(const unsigned int& va
 	return *this;
 }
 
+inline CppSer::Serializer& CppSer::Serializer::operator<<(const unsigned long& value)
+{
+	const std::string stringValue = std::to_string(value);
+	*this << stringValue.c_str();
+	return *this;
+}
+
 inline CppSer::Serializer& CppSer::Serializer::operator<<(const long long& value)
 {
 	const std::string stringValue = std::to_string(value);

@@ -42,6 +42,7 @@ namespace CppSer {
 		inline Serializer& operator<<(const char& value);
 		inline Serializer& operator<<(const int& value);
 		inline Serializer& operator<<(const unsigned int& value);
+		inline Serializer& operator<<(const unsigned long& value);
 		inline Serializer& operator<<(const long long& value);
 		inline Serializer& operator<<(const unsigned long long& value);
 		inline Serializer& operator<<(const float& value);
